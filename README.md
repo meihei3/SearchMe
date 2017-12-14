@@ -1,5 +1,6 @@
 # SearchMe
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yameholo/SearchMe/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yameholo/SearchMe/?branch=master)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 ***
