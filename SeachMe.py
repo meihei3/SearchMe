@@ -1,10 +1,16 @@
+# coding: utf-8
+
+# use for shell scripts
 from subprocess import check_call
 from os import path
 
+# use for database
 from sqlite3 import connect
 
+# use for janome methods
 from janome.tokenizer import Tokenizer
 
+# use for graph
 import networkx as nx
 from itertools import combinations
 
