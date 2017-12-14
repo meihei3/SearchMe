@@ -49,13 +49,16 @@ def get_prepared_data():
     cmd = "select visit_time,title from history_visits where title != '' group by title order by id"
     result = open_sql(raw_database_file, execute_sql_command(cmd))
     # add id
+    # Maybe this is not necessary....
     for i in range(len(result)):
         result[i] = (i, result[i][0], result[i][1])
     return result
 
 
 def get_noun(content=""):
+    # set tokenizer
     t = Tokenizer()
+    # return nouns in content
     return [token.surface for token in t.tokenize(content) if token.part_of_speech.split(',')[0] == '名詞']
 
 
