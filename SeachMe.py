@@ -13,6 +13,7 @@ from janome.tokenizer import Tokenizer
 # use for graph
 import networkx as nx
 from itertools import combinations
+import matplotlib.pyplot as plt
 
 raw_database_file = "History.db"
 database_file = "my_history.db"
@@ -77,23 +78,34 @@ def get_edge_list(contents=None):
     return list(combinations(contents, 2))
 
 
-def crate_graph(contents=None):
+def create_graph(contents=None):
     if contents is None:
         contents = []
     # set Graph (not Directed Graph)
     G = nx.Graph()
     for content in contents:
+        print(content)
         G.add_nodes_from(content)
         G.add_edges_from(get_edge_list(content))
     return G
 
 
 def main():
+    import matplotlib as mpl
+    print(mpl.matplotlib_fname())
     setup_history_database()
     r = get_prepared_data()
-    for t in r:
-        s = get_noun(t[2])
-        print(s)
+    g = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
+    print(g.nodes())
+    plt.figure(figsize=(15,15))
+    pos = nx.spring_layout(g)
+    nx.draw_networkx(g, pos)
+
+    nx.draw_networkx_nodes(g, pos, node_color="w", alpha=0.6)
+    nx.draw_networkx_labels(g, pos, fontsize=14, font_family="Yu Gothic", font_weight="bold")
+
+    plt.axis("off")
+    plt.show()
 
 
 if __name__ == '__main__':
