@@ -5,6 +5,9 @@ from sqlite3 import connect
 
 from janome.tokenizer import Tokenizer
 
+import networkx as nx
+from itertools import combinations
+
 raw_database_file = "History.db"
 database_file = "my_history.db"
 
@@ -62,11 +65,29 @@ def get_noun(content=""):
     return [token.surface for token in t.tokenize(content) if token.part_of_speech.split(',')[0] == '名詞']
 
 
+def get_edge_list(contents=None):
+    if contents is None:
+        contents = []
+    return list(combinations(contents, 2))
+
+
+def crate_graph(contents=None):
+    if contents is None:
+        contents = []
+    # set Graph (not Directed Graph)
+    G = nx.Graph()
+    for content in contents:
+        G.add_nodes_from(content)
+        G.add_edges_from(get_edge_list(content))
+    return G
+
+
 def main():
     setup_history_database()
     r = get_prepared_data()
     for t in r:
-        print(get_noun(t[2]))
+        s = get_noun(t[2])
+        print(s)
 
 
 if __name__ == '__main__':
