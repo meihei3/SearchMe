@@ -54,20 +54,16 @@ def get_prepared_data():
     return result
 
 
-def hoge():
+def get_noun(content=""):
     t = Tokenizer()
-    for token in t.tokenize(u'すもももももももものうち'):
-        partOfSpeech = token.part_of_speech.split(',')[0]
-        if partOfSpeech == u'名詞':
-            print(token.surface)
+    return [token.surface for token in t.tokenize(content) if token.part_of_speech.split(',')[0] == '名詞']
 
 
 def main():
     setup_history_database()
     r = get_prepared_data()
     for t in r:
-        print(t)
-    hoge()
+        print(get_noun(t[2]))
 
 
 if __name__ == '__main__':
