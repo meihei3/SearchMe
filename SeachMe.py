@@ -94,6 +94,16 @@ def get_edge_list(contents=None):
     return list(combinations(contents, 2))
 
 
+def add_edges(graph, edge_list=None):
+    if edge_list is None:
+        contents = []
+    for node0, node1 in edge_list:
+        if graph.has_edge(node0, node1):
+            graph.edge[node0][node1]["weight"] += 1
+        else:
+            graph.add_edge(node0, node1, {"weight": 1})
+
+
 def create_graph(contents=None):
     if contents is None:
         contents = []
@@ -101,7 +111,7 @@ def create_graph(contents=None):
     G = nx.Graph()
     for content in contents:
         G.add_nodes_from(content)
-        G.add_edges_from(get_edge_list(content))
+        add_edges(G, get_edge_list(content))
     return G
 
 
