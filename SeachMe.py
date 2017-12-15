@@ -33,9 +33,9 @@ def setup_family_font():
     # set matplotlibrc
     if path.isfile(path.expanduser("~/.matplotlib/matplotlibrc")):
         print("This program override '~/.matplotlib/matplotlibrc'.")
-        if not input("Do you permit us to override it? (y or n) >> ") == "y":
+        # if not input("Do you permit us to override it? (y or n) >> ") == "y":
             # kill this program
-            raise PermissionError("hoge hoge hoge")
+            # raise PermissionError("hoge hoge hoge")
 
     # call cp command
     check_call(["cp", "./font/matplotlibrc", path.expanduser("~/.matplotlib/matplotlibrc")])
@@ -104,13 +104,24 @@ def add_edges(graph, edge_list=None):
             graph.add_edge(node0, node1, {"weight": 1})
 
 
+def add_nodes(graph, content=None):
+    if content is None:
+        content = []
+    for node in content:
+        if graph.has_node(node):
+            graph.node[node]["count"] += 1
+        else:
+            graph.add_node(node, {"count": 1})
+
+
 def create_graph(contents=None):
     if contents is None:
         contents = []
     # set Graph (not Directed Graph)
     G = nx.Graph()
     for content in contents:
-        G.add_nodes_from(content)
+        content = " ".join(content).replace('- ', '').replace('| ', '').split()
+        add_nodes(G, content)
         add_edges(G, get_edge_list(content))
     return G
 
@@ -118,18 +129,22 @@ def create_graph(contents=None):
 def main():
     setup_history_database()
     r = get_prepared_data()
-    g = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
-    print(g.nodes())
+    G = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
+    print(G.nodes())
 
     setup_family_font()
-    plt.figure(figsize=(15,15))
-    pos = nx.spring_layout(g)
-    nx.draw_networkx(g, pos, font_family="IPAexGothic")
+    plt.figure(figsize=(15, 15))
+    pos = nx.spring_layout(G, k=0.2)
 
-    # nx.draw_networkx_nodes(g, pos, node_color="b", alpha=0.6)
-    # nx.draw_networkx_labels(g, pos, fontsize=14, font_family="IPAexGothic", font_weight="bold")
+    node_size = [d['count']*600 for (n,d) in G.nodes(data=True)]
+    nx.draw_networkx_nodes(G, pos, node_color='g',alpha=0.6, node_size=node_size)
+    nx.draw_networkx_labels(G, pos, fontsize=14, font_family="IPAexGothic", font_weight="bold")
 
-    plt.axis("off")
+    edge_width = [ d['weight']*0.2 for (u,v,d) in G.edges(data=True)]
+    nx.draw_networkx_edges(G, pos, alpha=0.4, edge_color='C', width=edge_width)
+
+    plt.axis('off')
+    plt.savefig('g2.png')
     plt.show()
 
 
