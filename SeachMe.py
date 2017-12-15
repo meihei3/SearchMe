@@ -14,7 +14,6 @@ from janome.tokenizer import Tokenizer
 import networkx as nx
 from itertools import combinations
 import matplotlib.pyplot as plt
-from matplotlib import matplotlib_fname, font_manager
 
 raw_database_file = "History.db"
 database_file = "my_history.db"
@@ -126,18 +125,13 @@ def create_graph(contents=None):
     return G
 
 
-def main():
-    setup_history_database()
-    r = get_prepared_data()
-    G = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
-    print(G.nodes())
-
+def draw_graph(G):
     setup_family_font()
     plt.figure(figsize=(15, 15))
     pos = nx.spring_layout(G, k=0.2)
 
     node_size = [d['count']*600 for (n,d) in G.nodes(data=True)]
-    nx.draw_networkx_nodes(G, pos, node_color='g',alpha=0.6, node_size=node_size)
+    nx.draw_networkx_nodes(G, pos, node_color='g',alpha=0.3, node_size=node_size)
     nx.draw_networkx_labels(G, pos, fontsize=14, font_family="IPAexGothic", font_weight="bold")
 
     edge_width = [ d['weight']*0.2 for (u,v,d) in G.edges(data=True)]
@@ -146,6 +140,15 @@ def main():
     plt.axis('off')
     plt.savefig('g2.png')
     plt.show()
+
+
+def main():
+    setup_history_database()
+    r = get_prepared_data()
+    G = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
+    print(G.nodes())
+
+    draw_graph(G)
 
 
 if __name__ == '__main__':
