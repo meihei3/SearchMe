@@ -14,6 +14,7 @@ from janome.tokenizer import Tokenizer
 import networkx as nx
 from itertools import combinations
 import matplotlib.pyplot as plt
+from matplotlib import matplotlib_fname, font_manager
 
 raw_database_file = "History.db"
 database_file = "my_history.db"
@@ -23,6 +24,21 @@ def setup_history_database():
     # copy safari history database to working directory
     # for safety work
     check_call(["cp", path.expanduser("~/Library/Safari/") + raw_database_file, "./"])
+
+
+def setup_family_font():
+    # copy ipaexg.ttf to matplotlib
+    # check_call(["cp", "./font/ipaexg.ttf", path.dirname(matplotlib_fname()) + "/fonts/ttf/"])
+
+    # set matplotlibrc
+    if path.isfile(path.expanduser("~/.matplotlib/matplotlibrc")):
+        print("This program override '~/.matplotlib/matplotlibrc'.")
+        if not input("Do you permit us to override it? (y or n) >> ") == "y":
+            # kill this program
+            raise PermissionError("hoge hoge hoge")
+
+    # call cp command
+    check_call(["cp", "./font/matplotlibrc", path.expanduser("~/.matplotlib/matplotlibrc")])
 
 
 def open_sql(filename, f):
@@ -84,25 +100,24 @@ def create_graph(contents=None):
     # set Graph (not Directed Graph)
     G = nx.Graph()
     for content in contents:
-        print(content)
         G.add_nodes_from(content)
         G.add_edges_from(get_edge_list(content))
     return G
 
 
 def main():
-    import matplotlib as mpl
-    print(mpl.matplotlib_fname())
     setup_history_database()
     r = get_prepared_data()
     g = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
     print(g.nodes())
+
+    setup_family_font()
     plt.figure(figsize=(15,15))
     pos = nx.spring_layout(g)
-    nx.draw_networkx(g, pos)
+    nx.draw_networkx(g, pos, font_family="IPAexGothic")
 
-    nx.draw_networkx_nodes(g, pos, node_color="w", alpha=0.6)
-    nx.draw_networkx_labels(g, pos, fontsize=14, font_family="Yu Gothic", font_weight="bold")
+    # nx.draw_networkx_nodes(g, pos, node_color="b", alpha=0.6)
+    # nx.draw_networkx_labels(g, pos, fontsize=14, font_family="IPAexGothic", font_weight="bold")
 
     plt.axis("off")
     plt.show()
