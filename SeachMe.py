@@ -10,12 +10,10 @@ from sqlite3 import connect
 # use for janome methods
 from janome.tokenizer import Tokenizer
 
-# use for graph
-import networkx as nx
-from itertools import combinations
-import matplotlib.pyplot as plt
-
+# use for word view
 from wordcloud import WordCloud
+
+# use for print percent of 'for loop'
 from tqdm import tqdm
 
 raw_database_file = "History.db"
