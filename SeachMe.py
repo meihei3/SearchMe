@@ -29,21 +29,6 @@ def setup_history_database():
     check_call(["cp", path.expanduser("~/Library/Safari/") + raw_database_file, "./"])
 
 
-def setup_family_font():
-    # copy ipaexg.ttf to matplotlib
-    # check_call(["cp", "./font/ipaexg.ttf", path.dirname(matplotlib_fname()) + "/fonts/ttf/"])
-
-    # set matplotlibrc
-    if path.isfile(path.expanduser("~/.matplotlib/matplotlibrc")):
-        print("This program override '~/.matplotlib/matplotlibrc'.")
-        # if not input("Do you permit us to override it? (y or n) >> ") == "y":
-            # kill this program
-            # raise PermissionError("hoge hoge hoge")
-
-    # call cp command
-    check_call(["cp", "./font/matplotlibrc", path.expanduser("~/.matplotlib/matplotlibrc")])
-
-
 def open_sql(filename, f):
     # open (or create) database
     connector = connect(filename)
