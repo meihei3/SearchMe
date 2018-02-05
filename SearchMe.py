@@ -82,7 +82,7 @@ def get_noun_list(data, size=50):
     datalist = [t[2] for t in data]
     if len(datalist) < size:
         size = len(datalist)
-    print("Morphological analysis...")
+    print("Morphological analysing...")
     return [get_noun(i) for i in tqdm(datalist[len(datalist)-size:])]
 
 
