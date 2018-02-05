@@ -15,6 +15,9 @@ import networkx as nx
 from itertools import combinations
 import matplotlib.pyplot as plt
 
+from wordcloud import WordCloud
+from tqdm import tqdm
+
 raw_database_file = "History.db"
 database_file = "my_history.db"
 
@@ -87,68 +90,39 @@ def get_noun(content=""):
     return [token.surface for token in t.tokenize(content) if token.part_of_speech.split(',')[0] == '名詞']
 
 
-def get_edge_list(contents=None):
-    if contents is None:
-        contents = []
-    return list(combinations(contents, 2))
+def get_noun_list(data, size=50):
+    if data is None:
+        raise ValueError
+    datalist = [t[2] for t in data]
+    if len(datalist) < size:
+        size = len(datalist)
+    print("Morphological analysis...")
+    return [get_noun(i) for i in tqdm(datalist[len(datalist)-size:])]
 
 
-def add_edges(graph, edge_list=None):
-    if edge_list is None:
-        contents = []
-    for node0, node1 in edge_list:
-        if graph.has_edge(node0, node1):
-            graph.edge[node0][node1]["weight"] += 1
-        else:
-            graph.add_edge(node0, node1, {"weight": 1})
+def crean_up_text(text):
+    return text.replace('- ', '').replace('| ', '')
 
 
-def add_nodes(graph, content=None):
-    if content is None:
-        content = []
-    for node in content:
-        if graph.has_node(node):
-            graph.node[node]["count"] += 1
-        else:
-            graph.add_node(node, {"count": 1})
+def extends_list(list_of_list):
+    ls = []
+    for l in list_of_list:
+        ls += l
+    return ls
 
 
-def create_graph(contents=None):
-    if contents is None:
-        contents = []
-    # set Graph (not Directed Graph)
-    G = nx.Graph()
-    for content in contents:
-        content = " ".join(content).replace('- ', '').replace('| ', '').split()
-        add_nodes(G, content)
-        add_edges(G, get_edge_list(content))
-    return G
-
-
-def draw_graph(G):
-    setup_family_font()
-    plt.figure(figsize=(15, 15))
-    pos = nx.spring_layout(G, k=0.2)
-
-    node_size = [d['count']*600 for (n,d) in G.nodes(data=True)]
-    nx.draw_networkx_nodes(G, pos, node_color='g',alpha=0.3, node_size=node_size)
-    nx.draw_networkx_labels(G, pos, fontsize=14, font_family="IPAexGothic", font_weight="bold")
-
-    edge_width = [ d['weight']*0.2 for (u,v,d) in G.edges(data=True)]
-    nx.draw_networkx_edges(G, pos, alpha=0.4, edge_color='C', width=edge_width)
-
-    plt.axis('off')
-    plt.savefig('g2.png')
-    plt.show()
+def create_wordcloud(text, filepath="./wordcloud.png"):
+    wordcloud = WordCloud(background_color="white",
+                          font_path="font/ipaexg.ttf",
+                          width=800,height=600).generate(text)
+    wordcloud.to_file(filepath)
 
 
 def main():
-    setup_history_database()
+    # setup_history_database()
     r = get_prepared_data()
-    G = create_graph([get_noun(i) for i in [t[2] for t in r][:10]])
-    print(G.nodes())
-
-    draw_graph(G)
+    text = crean_up_text(" ".join(extends_list(get_noun_list(r, size=300))))
+    create_wordcloud(text)
 
 
 if __name__ == '__main__':
