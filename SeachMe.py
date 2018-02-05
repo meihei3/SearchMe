@@ -4,18 +4,19 @@
 from subprocess import check_call
 from os import path
 
+# use for argment
+import sys
+
 # use for database
 from sqlite3 import connect
 
 # use for janome methods
 from janome.tokenizer import Tokenizer
 
-# use for graph
-import networkx as nx
-from itertools import combinations
-import matplotlib.pyplot as plt
-
+# use for word view
 from wordcloud import WordCloud
+
+# use for print percent of 'for loop'
 from tqdm import tqdm
 
 raw_database_file = "History.db"
@@ -26,21 +27,6 @@ def setup_history_database():
     # copy safari history database to working directory
     # for safety work
     check_call(["cp", path.expanduser("~/Library/Safari/") + raw_database_file, "./"])
-
-
-def setup_family_font():
-    # copy ipaexg.ttf to matplotlib
-    # check_call(["cp", "./font/ipaexg.ttf", path.dirname(matplotlib_fname()) + "/fonts/ttf/"])
-
-    # set matplotlibrc
-    if path.isfile(path.expanduser("~/.matplotlib/matplotlibrc")):
-        print("This program override '~/.matplotlib/matplotlibrc'.")
-        # if not input("Do you permit us to override it? (y or n) >> ") == "y":
-            # kill this program
-            # raise PermissionError("hoge hoge hoge")
-
-    # call cp command
-    check_call(["cp", "./font/matplotlibrc", path.expanduser("~/.matplotlib/matplotlibrc")])
 
 
 def open_sql(filename, f):
@@ -119,9 +105,14 @@ def create_wordcloud(text, filepath="./wordcloud.png"):
 
 
 def main():
-    # setup_history_database()
+    # pick up [size] histories
+    size = 50
+    if len(sys.argv) == 2:
+        size = int(sys.argv[1])
+
+    setup_history_database()
     r = get_prepared_data()
-    text = crean_up_text(" ".join(extends_list(get_noun_list(r, size=300))))
+    text = crean_up_text(" ".join(extends_list(get_noun_list(r, size=size))))
     create_wordcloud(text)
 
 
