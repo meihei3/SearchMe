@@ -14,5 +14,8 @@ pyhton package: tqdm-4.19.5
 
 ## Usage
 First, create your history wordcloud  
-`python SearchMe.py`  
-You can get 'wordcloud.png'. And open it.
+`python SearchMe.py [size]`  
+You can get 'wordcloud.png'. And open it.  
+
+The argv[1] (=size) provide you the histories from the latest to (the latest - size)  
+If you don't set size, The initial value is `50`.
