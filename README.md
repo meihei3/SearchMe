@@ -4,8 +4,15 @@
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 ***
-自己分析とは何ぞや！と暗中模索してるので、とりあえず自分の興味あることは何か。知りたい！！！  
-safariの履歴のデータベーズを持ってきて、関連や検索数を元にグラフを描く  
+safariの履歴のデータベーズを持ってきて、出現する単語（名詞）でwordcloudを使って可視化する。  
 
 ## Requests
-OS: macOS
+OS: macOS  
+python: python 3.x  
+pyhton package: wordcloud-1.3.1  
+pyhton package: tqdm-4.19.5  
+
+## Usage
+First, create your history wordcloud  
+`python SearchMe.py`  
+You can get 'wordcloud.png'. And open it.
